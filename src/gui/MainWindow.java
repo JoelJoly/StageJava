@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.event.ListDataListener;
 
 import entity.Banque;
+import exceptions.CompteInexistant;
 
 import java.awt.CardLayout;
 import javax.swing.ListSelectionModel;
@@ -23,8 +24,6 @@ import java.awt.Dimension;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 
 import javax.swing.JTextPane;
@@ -37,6 +36,8 @@ public class MainWindow extends JFrame{
 	private JList operationsList;
 	private JPanel operationPanel;
 	private BanqueController banqueController;
+	private JButton crediterButton;
+	private JButton debiterButton;
 	
 	public MainWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -87,19 +88,23 @@ public class MainWindow extends JFrame{
 		JPanel nouvelleOperationPanel = new JPanel();
 		operationsPanel.add(nouvelleOperationPanel);
 		
-		JButton crediterButton = new JButton("Cr\u00E9diter");
+		crediterButton = new JButton("Cr\u00E9diter");
+		crediterButton.setEnabled(false);
 		nouvelleOperationPanel.add(crediterButton);
-		crediterButton.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent arg0) {
+		crediterButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
 				CardLayout layout = ((CardLayout)operationPanel.getLayout());
 				layout.show(operationPanel, "name_181546337259623");
 			}
 		});
 		
-		JButton debiterButton = new JButton("D\u00E9biter");
+		debiterButton = new JButton("D\u00E9biter");
+		debiterButton.setEnabled(false);
 		nouvelleOperationPanel.add(debiterButton);
-		debiterButton.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent arg0) {
+		debiterButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
  				CardLayout layout = ((CardLayout)operationPanel.getLayout());
 				layout.show(operationPanel, "name_182090482162677");
 			}
@@ -228,7 +233,25 @@ public class MainWindow extends JFrame{
 	}
 	private void observeBank(final Banque banque) {
 		if (banqueController != null) banqueController.close();
-		banqueController = new BanqueController(banque, comptesList, operationsList);
+		banqueController = new BanqueController(banque, comptesList, new BanqueController.CompteBindable() {			
+			@Override
+			public void bindOn(Banque banque, int compteNumero) {
+				try {
+					if (banque == null || compteNumero < 0) {
+						if (operationsList.getModel() != null) {
+							((OperationController)operationsList.getModel()).close();
+							operationsList.setModel(null);
+						}
+					}
+					else {
+						operationsList.setModel(new OperationController(banque, compteNumero, crediterButton, debiterButton));						
+					}
+				} catch (CompteInexistant e) {
+					e.printStackTrace();
+				}				
+			}
+		});
+		
 		
 	}
 	public static void main(String[] args) {

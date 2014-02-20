@@ -5,16 +5,18 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import entity.Banque;
-import exceptions.CompteInexistant;
 
 public class BanqueController {
 	private Banque banque;
 	private JList comptesList;
-	private JList operationsList;
-	public BanqueController(Banque banque, JList comptesList, JList operationsList) {
+	private CompteBindable compteBindable;
+	public interface CompteBindable {
+		void bindOn(Banque banque, int compteNumero);
+	}
+	public BanqueController(Banque banque, JList comptesList, CompteBindable compteBindable) {
 		this.banque = banque;
 		this.comptesList = comptesList;
-		this.operationsList = operationsList;
+		this.compteBindable = compteBindable;
 
 		comptesList.setModel(new CompteController(banque));
 		for (ListSelectionListener l : comptesList.getListSelectionListeners()) {
@@ -24,17 +26,13 @@ public class BanqueController {
 			public void valueChanged(ListSelectionEvent event) {
 				Banque banque = BanqueController.this.banque;
 				int compteNumero = banque.getComptes().get(event.getFirstIndex());
-				try {
-					BanqueController.this.operationsList.setModel(new OperationController(banque, compteNumero));
-				} catch (CompteInexistant e) {
-					e.printStackTrace();
-				}				
+				BanqueController.this.compteBindable.bindOn(banque, compteNumero);
 			}
 		});
 	}
 	public void close() {
 		this.banque = null;
 		this.comptesList.setModel(null);
-		this.operationsList.setModel(null);
+		BanqueController.this.compteBindable.bindOn(null, -1);
 	}
 }
