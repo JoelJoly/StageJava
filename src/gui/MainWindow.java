@@ -19,12 +19,10 @@ import exceptions.CompteInexistant;
 import java.awt.CardLayout;
 import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import java.awt.Component;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Dimension;
-import javax.swing.Box;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
