@@ -30,6 +30,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
+
 import javax.swing.JTextPane;
 
 public class MainWindow extends JFrame{
@@ -132,6 +134,10 @@ public class MainWindow extends JFrame{
 		montantCreditPanel.add(montantCredit);
 		montantCredit.setPreferredSize(new Dimension(65, 20));
 		montantCredit.setModel(new SpinnerNumberModel(new Float(0), new Float(0), null, new Float(1)));
+		DecimalFormat format = ((JSpinner.NumberEditor)montantCredit.getEditor()).getFormat();
+		format.setDecimalSeparatorAlwaysShown(true);
+		format.setMaximumFractionDigits(2);
+		format.setMinimumFractionDigits(2);
 		
 		JPanel montantCreditValidationPanel = new JPanel();
 		crediterPanel.add(montantCreditValidationPanel);
@@ -159,6 +165,11 @@ public class MainWindow extends JFrame{
 		
 		JSpinner montantDebit = new JSpinner();
 		montantDebit.setPreferredSize(new Dimension(65, 20));
+		montantDebit.setModel(new SpinnerNumberModel(new Float(0), new Float(0), null, new Float(1)));
+		format = ((JSpinner.NumberEditor)montantDebit.getEditor()).getFormat();
+		format.setDecimalSeparatorAlwaysShown(true);
+		format.setMaximumFractionDigits(2);
+		format.setMinimumFractionDigits(2);
 		montantDebitPanel.add(montantDebit);
 		
 		JPanel montantDebitValidationPanel = new JPanel();
