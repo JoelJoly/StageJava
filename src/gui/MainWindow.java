@@ -130,7 +130,7 @@ public class MainWindow extends JFrame{
 		JLabel lblNewLabel = new JLabel("Montant \u00E0 ajouter");
 		montantCreditPanel.add(lblNewLabel);
 		
-		JSpinner montantCredit = new JSpinner();
+		final JSpinner montantCredit = new JSpinner();
 		montantCreditPanel.add(montantCredit);
 		montantCredit.setPreferredSize(new Dimension(65, 20));
 		montantCredit.setModel(new SpinnerNumberModel(new Float(0), new Float(0), null, new Float(1)));
@@ -150,7 +150,7 @@ public class MainWindow extends JFrame{
 		btnCreditAnnuler.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				cancelOperation();
+				closeOperation(montantCredit);
 			}
 		});
 		
@@ -163,7 +163,7 @@ public class MainWindow extends JFrame{
 		JLabel lblMontantRetirer = new JLabel("Montant \u00E0 retirer");
 		montantDebitPanel.add(lblMontantRetirer);
 		
-		JSpinner montantDebit = new JSpinner();
+		final JSpinner montantDebit = new JSpinner();
 		montantDebit.setPreferredSize(new Dimension(65, 20));
 		montantDebit.setModel(new SpinnerNumberModel(new Float(0), new Float(0), null, new Float(1)));
 		format = ((JSpinner.NumberEditor)montantDebit.getEditor()).getFormat();
@@ -183,7 +183,7 @@ public class MainWindow extends JFrame{
 		btnDebitAnnuler.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				cancelOperation();
+				closeOperation(montantDebit);				
 			}
 		});
 		
@@ -192,9 +192,11 @@ public class MainWindow extends JFrame{
 		Banque.restaurerBanque("Banque.ser");
 		installBanks();
 	}
-	private void cancelOperation() {
+	private void closeOperation(JSpinner source) {
 		CardLayout layout = ((CardLayout)operationPanel.getLayout());
-		layout.show(operationPanel, "name_182742241408614");		
+		layout.show(operationPanel, "name_182742241408614");
+		// reset value when the operation is closed
+		source.setValue(0);
 	}
 	private void installBanks() {
 		banqueCombo.setModel(new ComboBoxModel() {
