@@ -10,11 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.event.ListDataListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import entity.Banque;
-import exceptions.CompteInexistant;
 
 import java.awt.CardLayout;
 import javax.swing.ListSelectionModel;
@@ -39,6 +36,7 @@ public class MainWindow extends JFrame{
 	private JList comptesList;
 	private JList operationsList;
 	private JPanel operationPanel;
+	private BanqueController banqueController;
 	
 	public MainWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -229,20 +227,8 @@ public class MainWindow extends JFrame{
 		});
 	}
 	private void observeBank(final Banque banque) {
-		comptesList.setModel(new CompteController(banque));
-		for (ListSelectionListener l : comptesList.getListSelectionListeners()) {
-			comptesList.removeListSelectionListener(l);
-		}
-		comptesList.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent event) {
-				int compteNumero = banque.getComptes().get(event.getFirstIndex());
-				try {
-					operationsList.setModel(new OperationController(banque, compteNumero));
-				} catch (CompteInexistant e) {
-					e.printStackTrace();
-				}				
-			}
-		});
+		if (banqueController != null) banqueController.close();
+		banqueController = new BanqueController(banque, comptesList, operationsList);
 		
 	}
 	public static void main(String[] args) {
