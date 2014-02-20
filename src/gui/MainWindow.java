@@ -38,6 +38,10 @@ public class MainWindow extends JFrame{
 	private BanqueController banqueController;
 	private JButton crediterButton;
 	private JButton debiterButton;
+	private JSpinner montantCredit;
+	private JButton btnCreditOk;
+	private JSpinner montantDebit;
+	private JButton btnDebitOK;
 	
 	public MainWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,24 +95,10 @@ public class MainWindow extends JFrame{
 		crediterButton = new JButton("Cr\u00E9diter");
 		crediterButton.setEnabled(false);
 		nouvelleOperationPanel.add(crediterButton);
-		crediterButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				CardLayout layout = ((CardLayout)operationPanel.getLayout());
-				layout.show(operationPanel, "name_181546337259623");
-			}
-		});
 		
 		debiterButton = new JButton("D\u00E9biter");
 		debiterButton.setEnabled(false);
 		nouvelleOperationPanel.add(debiterButton);
-		debiterButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
- 				CardLayout layout = ((CardLayout)operationPanel.getLayout());
-				layout.show(operationPanel, "name_182090482162677");
-			}
-		});
 		
 		operationPanel = new JPanel();
 		operationsPanel.add(operationPanel);
@@ -131,7 +121,7 @@ public class MainWindow extends JFrame{
 		JLabel lblNewLabel = new JLabel("Montant \u00E0 ajouter");
 		montantCreditPanel.add(lblNewLabel);
 		
-		final JSpinner montantCredit = new JSpinner();
+		montantCredit = new JSpinner();
 		montantCreditPanel.add(montantCredit);
 		montantCredit.setPreferredSize(new Dimension(65, 20));
 		montantCredit.setModel(new SpinnerNumberModel(new Float(0), new Float(0), null, new Float(1)));
@@ -143,7 +133,7 @@ public class MainWindow extends JFrame{
 		JPanel montantCreditValidationPanel = new JPanel();
 		crediterPanel.add(montantCreditValidationPanel);
 		
-		JButton btnCreditOk = new JButton("OK");
+		btnCreditOk = new JButton("OK");
 		montantCreditValidationPanel.add(btnCreditOk);
 		
 		JButton btnCreditAnnuler = new JButton("Annuler");
@@ -164,7 +154,7 @@ public class MainWindow extends JFrame{
 		JLabel lblMontantRetirer = new JLabel("Montant \u00E0 retirer");
 		montantDebitPanel.add(lblMontantRetirer);
 		
-		final JSpinner montantDebit = new JSpinner();
+		montantDebit = new JSpinner();
 		montantDebit.setPreferredSize(new Dimension(65, 20));
 		montantDebit.setModel(new SpinnerNumberModel(new Float(0), new Float(0), null, new Float(1)));
 		format = ((JSpinner.NumberEditor)montantDebit.getEditor()).getFormat();
@@ -176,7 +166,7 @@ public class MainWindow extends JFrame{
 		JPanel montantDebitValidationPanel = new JPanel();
 		debiterPanel.add(montantDebitValidationPanel);
 		
-		JButton btnDebitOK = new JButton("OK");
+		btnDebitOK = new JButton("OK");
 		montantDebitValidationPanel.add(btnDebitOK);
 		
 		JButton btnDebitAnnuler = new JButton("Annuler");
@@ -244,7 +234,23 @@ public class MainWindow extends JFrame{
 						}
 					}
 					else {
-						operationsList.setModel(new OperationController(banque, compteNumero, crediterButton, debiterButton));						
+						operationsList.setModel(new OperationController(banque, compteNumero, crediterButton, debiterButton, new OperationController.OperationCreation() {							
+							@Override
+							public void beginOperation(JButton button, OperationController controller) {
+								String panelName = null;
+								if (button == crediterButton) {
+									panelName = "name_181546337259623";
+									controller.bindOperationGUI(montantCredit, btnCreditOk, true);
+								}
+								else if (button == debiterButton) {
+									panelName = "name_182090482162677";
+									controller.bindOperationGUI(montantDebit, btnDebitOK, false);
+									
+								}
+				 				CardLayout layout = ((CardLayout)operationPanel.getLayout());
+								layout.show(operationPanel, panelName);
+							}
+						}));						
 					}
 				} catch (CompteInexistant e) {
 					e.printStackTrace();
