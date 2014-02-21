@@ -7,6 +7,8 @@ import java.util.Collection;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JSpinner;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import entity.Banque;
 import exceptions.CompteInexistant;
@@ -61,10 +63,12 @@ public class OperationController extends DefaultListModel  {
 		try {
 			if (montant >= 0) {
 				this.banque.crediter(this.compte, montant);
+				updateOperations();
 			}
 			else {
 				try {
 					this.banque.debiter(this.compte, -montant);
+					updateOperations();
 				} catch (DebitNonAutorise e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -77,10 +81,27 @@ public class OperationController extends DefaultListModel  {
 	}
 	private void updateOperations() throws CompteInexistant {
 		Collection<String> operations = this.banque.getOperations(this.compte);
+		int previousSize = size();
 		removeAllElements();
 		for (String s : operations) {
 			addElement(s);
 		}
+		fireContentsChanged(OperationController.this, 0, operations.size() - 1);
+		fireIntervalAdded(OperationController.this, previousSize, operations.size() - 1);
+//		int newSize = operations.size();
+//		ListDataEvent event = null;
+//		if (newSize == previousSize) {
+//			event = new ListDataEvent(OperationController.this, ListDataEvent.CONTENTS_CHANGED, 0, newSize - 1);
+//		}
+//		else if (newSize > previousSize) {
+//			event = new ListDataEvent(OperationController.this, ListDataEvent.INTERVAL_ADDED, previousSize, newSize - 1);
+//		}
+//		else {
+//			event = new ListDataEvent(OperationController.this, ListDataEvent.INTERVAL_REMOVED, newSize, previousSize - 1);
+//		}
+//		for (ListDataListener l : getListDataListeners()) {
+//			l.contentsChanged(event);
+//		}
 	}
 
 	public void close() {
