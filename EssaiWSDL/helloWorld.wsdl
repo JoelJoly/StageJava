@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://localhost:8080" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="helloWorld" targetNamespace="http://localhost:8080">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://localhost:8080">
+      <xsd:element name="bonjour">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="in" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="bonjourResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="out" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="bonjourRequest">
+    <wsdl:part element="tns:bonjour" name="in"/>
+  </wsdl:message>
+  <wsdl:message name="bonjourResponse">
+    <wsdl:part element="tns:bonjourResponse" name="out"/>
+  </wsdl:message>
+  <wsdl:portType name="helloWorld">
+    <wsdl:operation name="bonjour">
+      <wsdl:input message="tns:bonjourRequest"/>
+      <wsdl:output message="tns:bonjourResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="helloWorldSOAP" type="tns:helloWorld">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="bonjour">
+      <soap:operation soapAction="http://localhost:8080/NewOperation"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="helloWorld">
+    <wsdl:port binding="tns:helloWorldSOAP" name="helloWorldSOAP">
+      <soap:address location="http://localhost:8080"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
