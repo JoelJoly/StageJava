@@ -66,9 +66,21 @@ public class TestRobot {
 		}
 		robot.prendre("Tresor1");
 		try {
-			robot.deposer("Tresor1");
+			robot.deposer("Tresor1");			
 		}
 		catch (TresorNonExistant e) {
+			fail();
+		}
+		try {
+			robot.deposer("Tresor1");
+			fail();
+		}
+		catch (TresorNonExistant e) {			
+		}
+		try {
+			robot.prendre("Tresor1");
+		}
+		catch (Perdu e) {
 			fail();
 		}
 	}
