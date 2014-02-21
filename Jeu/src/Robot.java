@@ -26,19 +26,19 @@ public class Robot {
 		return false;
 	}
 	
-	public void prendre (String tresor) throws TresorNonExistant, Perdu {
+	public void prendre (String tresor) throws TresorNonExistant, ExceptionPerdu {
 		Tresor t = maPiece.prendre(tresor);
 		lesTresors.put(t.getNom(), t);
 		maCharge += t.getPoids();
 		if (maCharge > chargeMax) {
-			throw new Perdu();
+			throw new ExceptionPerdu();
 		}
 	}
 	
-	public void deposer (String tresor) throws TresorNonExistant, Gagne{
+	public void deposer (String tresor) throws TresorNonExistant, ExceptionGagne{
 		Tresor t = lesTresors.get(tresor);
 		if (t == null)
-			throw new TresorNonExistant();
+			throw new TresorNonExistant("");
 		maPiece.deposer(t);
 		maCharge -= t.getPoids();
 		lesTresors.remove(t.getNom());

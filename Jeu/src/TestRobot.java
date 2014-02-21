@@ -12,7 +12,7 @@ public class TestRobot {
 	
 	@Before
 	public void setUp() throws Exception {
-		Piece p = new Piece();
+		Piece p = new Piece("");
 		robot = new Robot(p, 10);
 	}
 
@@ -52,12 +52,12 @@ public class TestRobot {
 			robot.prendre("Tresor1");
 			fail();
 		}
-		catch (Perdu e) {
+		catch (ExceptionPerdu e) {
 		}
 	}
 
 	@Test
-	public void testDeposer() throws TresorNonExistant, Perdu, Gagne {
+	public void testDeposer() throws TresorNonExistant, ExceptionPerdu, ExceptionGagne {
 		try {
 			robot.deposer("Tresor1");
 			fail();
@@ -93,7 +93,7 @@ public class TestRobot {
 	}
 
 	@Test
-	public void testTasquoi() throws TresorNonExistant, Perdu {
+	public void testTasquoi() throws TresorNonExistant, ExceptionPerdu {
 		Collection<String> t = robot.tasquoi();
 		assertEquals(0, t.size());
 		robot.prendre("Tresor1");

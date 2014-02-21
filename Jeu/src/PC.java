@@ -1,5 +1,4 @@
 
 public enum PC {
-	Nord, Est
-
+Nord,Sud,Est,Ouest;
 }
